@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réinitialiser le Panier</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 100px auto;
+            padding: 20px;
+            background: #f5f5f5;
+            text-align: center;
+        }
+        .box {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #f8b4d9;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button:hover {
+            background: #d8a7ca;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>🛒 Réinitialiser le Panier</h1>
+        
+        <div class="info">
+            <p><strong>Le panier sera vidé complètement.</strong></p>
+            <p>Après la réinitialisation, vous pourrez ajouter des produits normalement.</p>
+        </div>
+        
+        <button onclick="resetCart()">🔄 Réinitialiser le Panier</button>
+        <button onclick="checkCart()">📦 Vérifier le Panier</button>
+        <button onclick="goToShop()">🛍️ Aller à la Boutique</button>
+        
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function resetCart() {
+            localStorage.setItem('cart', JSON.stringify([]));
+            document.getElementById('result').innerHTML = 
+                '<p class="success">✅ Panier réinitialisé avec succès !</p>' +
+                '<p>Le panier est maintenant vide. Vous pouvez retourner à la boutique.</p>';
+            checkCart();
+        }
+        
+        function checkCart() {
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const resultDiv = document.getElementById('result');
+            
+            if (cart.length === 0) {
+                resultDiv.innerHTML = '<p class="success">✅ Le panier est vide (comme il se doit au départ)</p>';
+            } else {
+                resultDiv.innerHTML = 
+                    `<p style="color: orange;">⚠️ Le panier contient ${cart.length} article(s)</p>` +
+                    '<p>Cliquez sur "Réinitialiser le Panier" pour le vider.</p>';
+            }
+        }
+        
+        function goToShop() {
+            window.location.href = 'shop.html';
+        }
+        
+        // Vérifier automatiquement au chargement
+        window.onload = function() {
+            checkCart();
+        };
+    </script>
+</body>
+</html>

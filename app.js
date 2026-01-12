@@ -24,9 +24,22 @@ document.addEventListener('DOMContentLoaded', function() {
         initializeProducts();
     }
     
-    // Initialiser le panier s'il n'existe pas
+    // Initialiser le panier - toujours vide au départ
+    // Pour réinitialiser le panier, décommentez la ligne suivante :
+    // localStorage.removeItem('cart');
+    
     if (!localStorage.getItem('cart')) {
         localStorage.setItem('cart', JSON.stringify([]));
+    } else {
+        // Vérifier que le panier est valide
+        try {
+            const cart = JSON.parse(localStorage.getItem('cart'));
+            if (!Array.isArray(cart)) {
+                localStorage.setItem('cart', JSON.stringify([]));
+            }
+        } catch (e) {
+            localStorage.setItem('cart', JSON.stringify([]));
+        }
     }
     
     // Initialiser l'ID du prochain produit
@@ -395,10 +408,20 @@ function createProductCard(product) {
     addToCartBtn.addEventListener('click', function() {
         if (this.disabled) return;
         
-        const selectedSizeBtn = card.querySelector('.size-btn.active:not(.disabled)');
+        // Chercher une taille active, sinon prendre la première disponible
+        let selectedSizeBtn = card.querySelector('.size-btn.active:not(.disabled)');
+        
         if (!selectedSizeBtn) {
-            showCartNotification('Veuillez sélectionner une taille disponible');
-            return;
+            // Si aucune taille n'est sélectionnée, prendre la première disponible
+            selectedSizeBtn = card.querySelector('.size-btn:not(.disabled)');
+            if (selectedSizeBtn) {
+                // Sélectionner cette taille
+                card.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+                selectedSizeBtn.classList.add('active');
+            } else {
+                showCartNotification('Aucune taille disponible pour ce produit');
+                return;
+            }
         }
         
         const selectedSize = selectedSizeBtn.dataset.size;
@@ -518,22 +541,25 @@ function filterShopProducts() {
 
 // Ajouter un produit au panier
 function addToCart(productId, size) {
+    console.log('addToCart appelé:', { productId, size });
+    
     const products = getProducts();
     const product = products.find(p => p.id == productId);
     
     if (!product) {
-        console.error('Produit non trouvé');
+        console.error('Produit non trouvé:', productId);
+        showNotification('Erreur : Produit non trouvé');
         return;
     }
     
     // Vérifier le stock
-    if (product.stock[size] <= 0) {
+    if (!product.stock || product.stock[size] <= 0) {
         showNotification(`Désolé, le pyjama ${product.name} en taille ${size} est en rupture de stock.`);
         return;
     }
     
-    // Récupérer le panier
-    let cart = JSON.parse(localStorage.getItem('cart'));
+    // Récupérer le panier (toujours un tableau vide au départ)
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
     
     // Vérifier si le produit avec la même taille est déjà dans le panier
     const existingItemIndex = cart.findIndex(item => item.id == productId && item.size === size);
@@ -543,25 +569,38 @@ function addToCart(productId, size) {
         cart[existingItemIndex].quantity += 1;
     } else {
         // Ajouter un nouvel article
-        cart.push({
+        // Utiliser le prix promo s'il existe, sinon le prix normal
+        const productPrice = product.promoPrice || product.price || 199;
+        const newItem = {
             id: productId,
-            name: product.name,
-            price: product.price,
+            name: product.name || 'Produit',
+            price: productPrice,
             size: size,
             quantity: 1,
-            image: product.image
-        });
+            image: product.image || ''
+        };
+        cart.push(newItem);
+        console.log('Nouvel article ajouté:', newItem);
     }
     
     // Mettre à jour le panier
     localStorage.setItem('cart', JSON.stringify(cart));
+    console.log('Panier mis à jour:', cart);
     
     // Mettre à jour le compteur
     updateCartCount();
     
+    // Afficher une notification
+    showNotification(`${product.name} (Taille: ${size}) ajouté au panier !`);
+    
     // Si le panier est ouvert, mettre à jour l'affichage
     if (document.querySelector('.cart-sidebar.active')) {
         loadCartItems();
+    }
+    
+    // Si on est sur la page panier, recharger
+    if (document.getElementById('cart-items-container')) {
+        loadCartPage();
     }
 }
 
@@ -638,21 +677,27 @@ function loadCartPage() {
         const product = products.find(p => p.id == item.id);
         const imageUrl = item.image || product?.image || `https://via.placeholder.com/100x100/F8BBD0/FFFFFF?text=Pyjama+${item.id}`;
         
+        // Utiliser le prix du produit si le prix de l'item n'existe pas
+        const itemPrice = item.price || product?.price || 199;
+        const itemName = item.name || product?.name || 'Produit';
+        const itemSize = item.size || 'M';
+        const itemQuantity = item.quantity || 1;
+        
         const cartItem = document.createElement('div');
         cartItem.className = 'cart-item';
         cartItem.innerHTML = `
             <div class="cart-item-image">
-                <img src="${imageUrl}" alt="${item.name}">
+                <img src="${imageUrl}" alt="${itemName}">
             </div>
             <div class="cart-item-details">
-                <h3 class="cart-item-name">${item.name}</h3>
-                <p class="cart-item-size">Taille: ${item.size}</p>
-                <div class="cart-item-price">${item.price.toFixed(2)} DH</div>
+                <h3 class="cart-item-name">${itemName}</h3>
+                <p class="cart-item-size">Taille: ${itemSize}</p>
+                <div class="cart-item-price">${itemPrice.toFixed(2)} DH</div>
             </div>
             <div class="cart-item-actions">
                 <div class="quantity-control">
                     <button class="quantity-btn" data-index="${index}" data-action="decrease">-</button>
-                    <span class="quantity">${item.quantity}</span>
+                    <span class="quantity">${itemQuantity}</span>
                     <button class="quantity-btn" data-index="${index}" data-action="increase">+</button>
                 </div>
                 <button class="remove-item" data-index="${index}">
@@ -696,7 +741,11 @@ function updateCartSummary() {
     const subtotalEl = document.getElementById('subtotal');
     const totalPriceEl = document.getElementById('total-price');
     
-    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const subtotal = cart.reduce((sum, item) => {
+        const price = item.price || 199;
+        const quantity = item.quantity || 1;
+        return sum + (price * quantity);
+    }, 0);
     const delivery = 30; // Frais de livraison fixes
     const total = subtotal + delivery;
     
@@ -802,7 +851,9 @@ function loadCartItems() {
     let total = 0;
     
     cart.forEach((item, index) => {
-        const itemTotal = item.price * item.quantity;
+        const price = item.price || 199;
+        const quantity = item.quantity || 1;
+        const itemTotal = price * quantity;
         total += itemTotal;
         
         const cartItem = document.createElement('div');
@@ -869,7 +920,7 @@ function loadCartItems() {
 
 // Mettre à jour la quantité d'un article
 function updateQuantity(index, change) {
-    let cart = JSON.parse(localStorage.getItem('cart'));
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
     
     if (index < 0 || index >= cart.length) return;
     
@@ -908,7 +959,7 @@ function updateQuantity(index, change) {
 
 // Supprimer un article du panier
 function removeItem(index) {
-    let cart = JSON.parse(localStorage.getItem('cart'));
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
     
     if (index < 0 || index >= cart.length) return;
     
@@ -972,7 +1023,11 @@ function processCheckout() {
     }
     
     // Calculer le total
-    const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    const subtotal = cart.reduce((sum, item) => {
+        const price = item.price || 199;
+        const quantity = item.quantity || 1;
+        return sum + (price * quantity);
+    }, 0);
     const delivery = 30;
     const total = subtotal + delivery;
     
@@ -989,7 +1044,11 @@ function processCheckout() {
     message += `\n🛍️ *Commande :*\n`;
     
     cart.forEach((item, index) => {
-        message += `${index + 1}. ${item.name} - Taille: ${item.size} - Qté: ${item.quantity} - ${(item.price * item.quantity).toFixed(2)} DH\n`;
+        const price = item.price || 199;
+        const quantity = item.quantity || 1;
+        const itemName = item.name || 'Produit';
+        const itemSize = item.size || 'M';
+        message += `${index + 1}. ${itemName} - Taille: ${itemSize} - Qté: ${quantity} - ${(price * quantity).toFixed(2)} DH\n`;
     });
     
     message += `\n💰 *Total :*\n`;

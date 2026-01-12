@@ -217,12 +217,23 @@ ul {
 }
 
 .loader-logo {
-    height: 80px;
+    height: 100px;
     width: auto;
     object-fit: contain;
-    margin-bottom: 1rem;
-    animation: float 3s ease-in-out infinite;
+    margin-bottom: 2rem;
+    animation: fadeInScale 1s ease-out;
     max-width: 200px;
+}
+
+@keyframes fadeInScale {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 .loader p {
@@ -360,10 +371,57 @@ ul {
 }
 
 .logo-img {
-    height: 50px;
+    height: 35px;
     width: auto;
+    max-width: 120px;
     object-fit: contain;
     transition: var(--transition);
+}
+
+.navbar .logo-img {
+    height: 70px;
+    max-width: 200px;
+}
+
+.logo-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-right: 0.8rem;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    font-style: italic;
+}
+
+.navbar .logo-text {
+    font-size: 0.9rem;
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+.footer .logo-text {
+    font-size: 1rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.footer .logo {
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.footer .logo-img {
+    height: 45px;
+    max-width: 180px;
+}
+
+@media (max-width: 768px) {
+    .navbar .logo-img {
+        height: 25px;
+        max-width: 80px;
+    }
 }
 
 .logo:hover .logo-img {
@@ -375,13 +433,6 @@ ul {
     font-size: 1.8rem;
 }
 
-.loader-logo {
-    height: 80px;
-    width: auto;
-    object-fit: contain;
-    margin-bottom: 1rem;
-    animation: float 3s ease-in-out infinite;
-}
 
 .nav-menu {
     display: flex;
