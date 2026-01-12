@@ -998,7 +998,7 @@ function processCheckout() {
     message += `*Total : ${total.toFixed(2)} DH*\n`;
     
     // Numéro WhatsApp
-    const whatsappNumber = '21266428600'; // Format international sans + ni espaces
+    const whatsappNumber = '212664286000'; // Format international sans + ni espaces
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     
     // Ouvrir WhatsApp
