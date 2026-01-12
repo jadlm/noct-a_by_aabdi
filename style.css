@@ -216,6 +216,15 @@ ul {
     margin-bottom: 0.5rem;
 }
 
+.loader-logo {
+    height: 80px;
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 1rem;
+    animation: float 3s ease-in-out infinite;
+    max-width: 200px;
+}
+
 .loader p {
     color: var(--text-light);
 }
@@ -350,9 +359,28 @@ ul {
     color: var(--accent-color);
 }
 
+.logo-img {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+    transition: var(--transition);
+}
+
+.logo:hover .logo-img {
+    transform: scale(1.05);
+}
+
 .logo i {
     margin-right: 0.5rem;
     font-size: 1.8rem;
+}
+
+.loader-logo {
+    height: 80px;
+    width: auto;
+    object-fit: contain;
+    margin-bottom: 1rem;
+    animation: float 3s ease-in-out infinite;
 }
 
 .nav-menu {
