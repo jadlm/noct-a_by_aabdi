@@ -1,0 +1,80 @@
+===========================================
+EXEMPLE : Comment Modifier les Images
+===========================================
+
+Dans le fichier app.js, trouvez la fonction initializeProducts()
+(vers la ligne 45)
+
+===========================================
+EXEMPLE 1 : Image Locale dans un Dossier
+===========================================
+
+AVANT :
+image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?...",
+
+APRÈS (si votre image est dans images/pyjama-etoiles.jpg) :
+image: "images/pyjama-etoiles.jpg",
+
+===========================================
+EXEMPLE 2 : Image dans le Même Dossier
+===========================================
+
+AVANT :
+image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?...",
+
+APRÈS (si votre image est dans le même dossier que index.html) :
+image: "17XPA2.1.responsive-lg.centre.png",
+
+===========================================
+EXEMPLE 3 : Image Hébergée en Ligne
+===========================================
+
+AVANT :
+image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?...",
+
+APRÈS (URL complète de votre image) :
+image: "https://i.imgur.com/abc123.jpg",
+
+===========================================
+EXEMPLE COMPLET D'UN PRODUIT
+===========================================
+
+{
+    id: 1,
+    name: "Pyjama Licorne Magique",
+    price: 29.99,
+    image: "images/pyjama-licorne.jpg",  // ← MODIFIEZ ICI
+    description: "Pyjama doux avec motif licorne, parfait pour des rêves magiques.",
+    stock: { S: 15, M: 12, L: 10, XL: 8 }
+}
+
+===========================================
+STRUCTURE DE DOSSIER RECOMMANDÉE
+===========================================
+
+pyjama/
+├── images/                    ← Créez ce dossier
+│   ├── pyjama-licorne.jpg     ← Vos images ici
+│   ├── pyjama-etoiles.jpg
+│   ├── pyjama-fleurs.jpg
+│   └── ...
+├── index.html
+├── shop.html
+├── cart.html
+├── style.css
+└── app.js
+
+===========================================
+CHEMINS RELATIFS
+===========================================
+
+Si votre structure est :
+pyjama/
+├── images/
+│   └── pyjama-1.jpg
+└── app.js
+
+Alors dans app.js, utilisez :
+image: "images/pyjama-1.jpg"
+
+===========================================

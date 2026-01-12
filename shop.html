@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boutique - DouceNuit</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;500;600&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Promo Banner -->
+    <div class="promo-banner">
+        <div class="promo-content">
+            <i class="fas fa-tags"></i>
+            <span><strong>PROMOTION -20%</strong> : Tous les pyjamas à <strong>199 MAD</strong> au lieu de 249 MAD !</span>
+            <i class="fas fa-fire"></i>
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-moon"></i>
+                <span>DouceNuit</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html"><i class="fas fa-home"></i> Accueil</a></li>
+                <li><a href="shop.html" class="active"><i class="fas fa-shopping-bag"></i> Boutique</a></li>
+                <li><a href="cart.html" class="cart-link"><i class="fas fa-shopping-cart"></i> Panier <span class="cart-count">0</span></a></li>
+                <li><a href="admin.html"><i class="fas fa-lock"></i> Admin</a></li>
+            </ul>
+            <div class="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Shop Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1>Notre Boutique</h1>
+            <p>Découvrez notre collection exclusive de pyjamas pour filles</p>
+        </div>
+    </section>
+
+    <!-- Shop Content -->
+    <section class="shop-content">
+        <div class="container">
+            <div class="shop-controls">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="product-search" placeholder="Rechercher un pyjama...">
+                </div>
+                <div class="filter-options">
+                    <select id="size-filter">
+                        <option value="">Toutes les tailles</option>
+                        <option value="S">Petit (S)</option>
+                        <option value="M">Moyen (M)</option>
+                        <option value="L">Grand (L)</option>
+                        <option value="XL">Très grand (XL)</option>
+                    </select>
+                    <select id="price-filter">
+                        <option value="">Trier par prix</option>
+                        <option value="low">Prix croissant</option>
+                        <option value="high">Prix décroissant</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="products-grid" id="shop-products">
+                <!-- Les produits seront chargés dynamiquement par JavaScript -->
+            </div>
+            
+            <div class="no-products" id="no-products-message" style="display: none;">
+                <i class="fas fa-search"></i>
+                <h3>Aucun produit trouvé</h3>
+                <p>Essayez de modifier vos critères de recherche</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="logo">
+                        <i class="fas fa-moon"></i>
+                        <span>DouceNuit</span>
+                    </div>
+                    <p>Des pyjamas doux et confortables pour des nuits paisibles. Spécialement conçus pour les petites filles.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>Liens rapides</h3>
+                    <ul>
+                        <li><a href="index.html">Accueil</a></li>
+                        <li><a href="shop.html">Boutique</a></li>
+                        <li><a href="cart.html">Panier</a></li>
+                        <li><a href="admin.html">Espace Admin</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Contact</h3>
+                    <ul class="contact-info">
+                        <li><i class="fas fa-phone"></i> +212 6 XX XX XX XX</li>
+                        <li><i class="fas fa-envelope"></i> contact@doucenuite.ma</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Casablanca, Maroc</li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Newsletter</h3>
+                    <p>Inscrivez-vous pour recevoir nos offres spéciales</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Votre email" required>
+                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 DouceNuit - Tous droits réservés. Site e-commerce de pyjamas pour filles.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification d'ajout au panier -->
+    <div class="notification" id="add-to-cart-notification">
+        <i class="fas fa-check-circle"></i>
+        <span>Produit ajouté au panier!</span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

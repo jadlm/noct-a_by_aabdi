@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fix Images - DouceNuit</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        button {
+            background: #f8b4d9;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        button:hover {
+            background: #d8a7ca;
+        }
+        .success {
+            color: green;
+            font-weight: bold;
+        }
+        .error {
+            color: red;
+            font-weight: bold;
+        }
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Fix Images - Diagnostic</h1>
+    
+    <div class="box">
+        <h2>Étape 1 : Vider le Cache (IMPORTANT)</h2>
+        <p>Le navigateur a peut-être sauvegardé les anciennes données. Cliquez sur ce bouton pour tout réinitialiser :</p>
+        <button onclick="clearCache()">🗑️ Vider le Cache et Réinitialiser</button>
+        <p id="cache-result"></p>
+    </div>
+    
+    <div class="box">
+        <h2>Étape 2 : Tester l'Image</h2>
+        <p>Vérifiez si votre image est accessible :</p>
+        <button onclick="testImage()">🖼️ Tester l'Image</button>
+        <div id="image-test"></div>
+    </div>
+    
+    <div class="box">
+        <h2>Étape 3 : Voir les Produits Actuels</h2>
+        <button onclick="showProducts()">📦 Voir les Produits</button>
+        <div id="products-list"></div>
+    </div>
+    
+    <div class="box">
+        <h2>Instructions</h2>
+        <ol>
+            <li>Cliquez sur <strong>"Vider le Cache"</strong> ci-dessus</li>
+            <li>Fermez cette page</li>
+            <li>Ouvrez <code>index.html</code> dans votre navigateur</li>
+            <li>Appuyez sur <strong>F5</strong> pour recharger</li>
+            <li>L'image devrait maintenant s'afficher !</li>
+        </ol>
+    </div>
+
+    <script>
+        function clearCache() {
+            try {
+                // Vider le localStorage
+                localStorage.removeItem('products');
+                localStorage.removeItem('cart');
+                localStorage.removeItem('nextProductId');
+                
+                document.getElementById('cache-result').innerHTML = 
+                    '<p class="success">✅ Cache vidé avec succès !</p>' +
+                    '<p>Maintenant, fermez cette page et ouvrez index.html</p>';
+            } catch(e) {
+                document.getElementById('cache-result').innerHTML = 
+                    '<p class="error">❌ Erreur : ' + e.message + '</p>';
+            }
+        }
+        
+        function testImage() {
+            const img = new Image();
+            const imagePath = 'images/pyjama1.png';
+            
+            img.onload = function() {
+                document.getElementById('image-test').innerHTML = 
+                    '<p class="success">✅ Image trouvée !</p>' +
+                    '<img src="' + imagePath + '" style="max-width: 200px; margin-top: 10px; border: 2px solid green;">';
+            };
+            
+            img.onerror = function() {
+                document.getElementById('image-test').innerHTML = 
+                    '<p class="error">❌ Image NON trouvée !</p>' +
+                    '<p>Vérifiez que :</p>' +
+                    '<ul>' +
+                    '<li>Le fichier <code>images/pyjama1.png</code> existe</li>' +
+                    '<li>Le nom est exact (majuscules/minuscules comptent)</li>' +
+                    '<li>L\'extension est correcte (.png, .jpg, etc.)</li>' +
+                    '</ul>';
+            };
+            
+            img.src = imagePath;
+        }
+        
+        function showProducts() {
+            const products = JSON.parse(localStorage.getItem('products') || '[]');
+            let html = '<h3>Produits actuels :</h3>';
+            
+            if (products.length === 0) {
+                html += '<p>Aucun produit dans le cache. Ils seront créés au prochain chargement.</p>';
+            } else {
+                html += '<ul>';
+                products.forEach(p => {
+                    html += '<li><strong>' + p.name + '</strong> - Image: <code>' + p.image + '</code></li>';
+                });
+                html += '</ul>';
+            }
+            
+            document.getElementById('products-list').innerHTML = html;
+        }
+        
+        // Tester automatiquement au chargement
+        window.onload = function() {
+            testImage();
+            showProducts();
+        };
+    </script>
+</body>
+</html>
