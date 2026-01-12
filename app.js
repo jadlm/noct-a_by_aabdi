@@ -997,8 +997,8 @@ function processCheckout() {
     message += `Livraison : ${delivery} DH\n`;
     message += `*Total : ${total.toFixed(2)} DH*\n`;
     
-    // Numéro WhatsApp (à remplacer par le vrai numéro)
-    const whatsappNumber = '212612345678'; // Format international sans + ni espaces
+    // Numéro WhatsApp
+    const whatsappNumber = '21266428600'; // Format international sans + ni espaces
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
     
     // Ouvrir WhatsApp
