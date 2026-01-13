@@ -1,0 +1,3 @@
+# Redirections Netlify
+# Redirige uniquement la racine vers index.html
+/ /index.html 200

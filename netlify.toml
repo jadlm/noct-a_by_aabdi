@@ -4,11 +4,8 @@
   # Pas de build nécessaire pour un site statique
   publish = "."
 
-[[redirects]]
-  # Redirection de la racine vers index.html
-  from = "/*"
-  to = "/index.html"
-  status = 200
+# Pas de redirection SPA - laissez Netlify servir les fichiers HTML directement
+# Les redirections sont gérées par le fichier _redirects si nécessaire
 
 # Headers de sécurité
 [[headers]]

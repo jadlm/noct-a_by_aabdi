@@ -14,47 +14,53 @@
 
 // Initialiser l'application au chargement de la page
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('SweetDreams - Boutique de pyjamas chargée');
-    
-    // Initialiser les produits par défaut si nécessaire
-    // Pour forcer la réinitialisation, décommentez la ligne suivante :
-    localStorage.removeItem('products');
-    
-    if (!localStorage.getItem('products')) {
-        initializeProducts();
-    }
-    
-    // Initialiser le panier - toujours vide au départ
-    // Pour réinitialiser le panier, décommentez la ligne suivante :
-    // localStorage.removeItem('cart');
-    
-    if (!localStorage.getItem('cart')) {
-        localStorage.setItem('cart', JSON.stringify([]));
-    } else {
-        // Vérifier que le panier est valide
-        try {
-            const cart = JSON.parse(localStorage.getItem('cart'));
-            if (!Array.isArray(cart)) {
+    try {
+        console.log('SweetDreams - Boutique de pyjamas chargée');
+        
+        // Initialiser les produits par défaut si nécessaire
+        // Pour forcer la réinitialisation, décommentez la ligne suivante :
+        // localStorage.removeItem('products');
+        
+        if (!localStorage.getItem('products')) {
+            initializeProducts();
+        }
+        
+        // Initialiser le panier - toujours vide au départ
+        // Pour réinitialiser le panier, décommentez la ligne suivante :
+        // localStorage.removeItem('cart');
+        
+        if (!localStorage.getItem('cart')) {
+            localStorage.setItem('cart', JSON.stringify([]));
+        } else {
+            // Vérifier que le panier est valide
+            try {
+                const cart = JSON.parse(localStorage.getItem('cart'));
+                if (!Array.isArray(cart)) {
+                    localStorage.setItem('cart', JSON.stringify([]));
+                }
+            } catch (e) {
                 localStorage.setItem('cart', JSON.stringify([]));
             }
-        } catch (e) {
-            localStorage.setItem('cart', JSON.stringify([]));
         }
+        
+        // Initialiser l'ID du prochain produit
+        if (!localStorage.getItem('nextProductId')) {
+            localStorage.setItem('nextProductId', '9');
+        }
+        
+        // Mettre à jour le compteur du panier
+        updateCartCount();
+        
+        // Configurer les événements globaux
+        setupGlobalEvents();
+        
+        // Charger les éléments spécifiques à la page
+        loadPageSpecificContent();
+    } catch (error) {
+        console.error('Erreur lors de l\'initialisation:', error);
+        // Masquer le loader même en cas d'erreur
+        hideLoader();
     }
-    
-    // Initialiser l'ID du prochain produit
-    if (!localStorage.getItem('nextProductId')) {
-        localStorage.setItem('nextProductId', '9');
-    }
-    
-    // Mettre à jour le compteur du panier
-    updateCartCount();
-    
-    // Configurer les événements globaux
-    setupGlobalEvents();
-    
-    // Charger les éléments spécifiques à la page
-    loadPageSpecificContent();
 });
 
 // Initialiser les produits par défaut
@@ -227,9 +233,25 @@ function hideLoader() {
     if (loader) {
         setTimeout(() => {
             loader.classList.add('hidden');
+            // S'assurer que le loader est vraiment caché
+            setTimeout(() => {
+                loader.style.display = 'none';
+            }, 500);
         }, 800);
     }
 }
+
+// Fallback pour masquer le loader après un délai maximum (sécurité)
+setTimeout(() => {
+    const loader = document.querySelector('.loader');
+    if (loader && !loader.classList.contains('hidden')) {
+        console.warn('Loader toujours visible après 5s, masquage forcé');
+        loader.classList.add('hidden');
+        setTimeout(() => {
+            loader.style.display = 'none';
+        }, 500);
+    }
+}, 5000);
 
 // ============================================
 // SECTION 2: GESTION DES PRODUITS
